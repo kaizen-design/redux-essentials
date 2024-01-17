@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { PostAuthor } from './PostAuthor';
 import { ReactionButtons } from './ReactionButtons';
+import { selectPostById } from './postsSlice';
+import { TimeAgo } from './TimeAgo';
 
 export const SinglePostPage = ({ match }) => {
   const { id } = match.params
 
-  const post = useSelector(state =>
-    state.posts.find(post => post.id === id)
-  )
+  const post = useSelector(state => selectPostById(state, id));
 
   if (!post) {
     return (
@@ -23,7 +23,10 @@ export const SinglePostPage = ({ match }) => {
     <section>
       <article className="post">
         <h2>{post.title}</h2>
-        <PostAuthor userId={post.user} />
+        <div>
+          <PostAuthor userId={post.user} />
+          <TimeAgo timestamp={post.date} />
+        </div>
         <p className="post-content">{post.content}</p>
         <ReactionButtons post={post} />
         <Link to={`/edit-post/${post.id}`} className="button">
